@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1090752258256",
+    "firebase_url": "https://online-shop-d2eca-default-rtdb.firebaseio.com",
+    "project_id": "online-shop-d2eca",
+    "storage_bucket": "online-shop-d2eca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090752258256:android:638f3498b7d738c61dfed5",
+        "android_client_info": {
+          "package_name": "com.example.onlineshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090752258256-gdrdo06f3fd8pc8vjep57g5fcq4e7kcf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBn_vB2ikkx_8C-9CQGUsv9WVw1Xj5P5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090752258256-gdrdo06f3fd8pc8vjep57g5fcq4e7kcf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090752258256:android:c0b2498670eef9c51dfed5",
+        "android_client_info": {
+          "package_name": "com.souq.live"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090752258256-gdrdo06f3fd8pc8vjep57g5fcq4e7kcf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBn_vB2ikkx_8C-9CQGUsv9WVw1Xj5P5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090752258256-gdrdo06f3fd8pc8vjep57g5fcq4e7kcf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
