@@ -25,7 +25,8 @@ final int _selectedIndex = 0;
 @override
 void initState() {
 super.initState();
- // Initialize FCM
+ try {
+   // Initialize FCM
   final FCMHelper fcmHelper = FCMHelper();
    fcmHelper.initialize();
    fcmHelper.getToken().then((token){
@@ -35,6 +36,9 @@ ref.read(httpClientProvider).post('/auth/account/update_token'
   'fcm_token':token
 });
    });
+ } catch (e) {
+   
+ }
 }
 changeIndex(int index){
                   ref.read(bottomSheetCurrentIndex.notifier).update((state) 

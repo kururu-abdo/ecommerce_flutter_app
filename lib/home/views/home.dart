@@ -5,6 +5,7 @@ import 'package:ecommerce_app/home/data/models/product.dart';
 import 'package:ecommerce_app/home/views/widgets/banner.dart';
 import 'package:ecommerce_app/providers/http_client_provider.dart';
 import 'package:ecommerce_app/shared/widget/category_card.dart';
+import 'package:ecommerce_app/shared/widget/home_search_button.dart';
 import 'package:ecommerce_app/shared/widget/product_card.dart';
 import 'package:ecommerce_app/shared/widget/search_textfield.dart';
 import 'package:flutter/material.dart';
@@ -44,51 +45,71 @@ final searchController = TextEditingController();
     Scaffold(
       backgroundColor: Colors.white,
        appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100), // Custom height for AppBar
+        preferredSize: const Size.fromHeight(80), // Custom height for AppBar
         child: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Theme.of(context).primaryColor,
+          // backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Colors.white,
           // title: Image.asset(Images.logo_with_name),
           flexibleSpace: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                const SizedBox(),
+                const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Delivery to",
+                  
+                    Text(
+                      "Delivery Address",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.grey,
                         fontSize: 16,
                       ),
                     ),
-                    TextButton(
-                      onPressed: (){
-                        
-                      },
-                      child: const Text(
-                        "Change",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
+                      Text(
+                      "Khartoum , Sudan",
+                      style: TextStyle(
+                        // color: Colors.grey,
+                        fontSize: 16,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
-                const Text(
-                  'currentAddress',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
+               Stack(
+                 children: [
+                   Container(
+                                     height: 40,width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      shape: BoxShape.circle
+                    ),
+                    child: const Center(child: Icon(Icons.notifications_none_rounded),),
+                   ),
+            
+                   PositionedDirectional(
+                    top: .5,
+                    end: 0,
+                    child: Container(
+                      width: 10,height: 10,
+                      margin: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Theme.of(context).primaryColor, 
+                        boxShadow: const [
+                          BoxShadow(
+                            offset: Offset(0,0),color: Colors.white, 
+                            blurRadius: 1,spreadRadius: 1
+                          )
+                        ]
+                      ),
+                    ))
+                 ],
+                 
+               )
               ],
             ),
           ),
@@ -105,13 +126,19 @@ ref.refresh(topSalesProvider('/top_sales'));
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 const SizedBox(height: 8,),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SearchTextFormField(
-                  hintText: 'search',controller:searchController,
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child:
+HomeSearchButton()
+
+                //  SearchTextFormField(
+                //   hintText: 'search',controller:searchController,
                   
                   
-                  ),
+
+                //   ),
+
+
               ),    const SizedBox(height: 8,),
                const BannerCarousel(),
               const SizedBox(height: 8,),
