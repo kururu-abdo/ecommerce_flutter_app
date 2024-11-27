@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:ecommerce_app/splash/view/splash.dart';
@@ -19,7 +20,10 @@ class MyHttpOverrides extends HttpOverrides {
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   globalSharedPrefs =await  SharedPreferences.getInstance();
-  if (Platform.isIOS) {
+ 
+    HttpOverrides.global = MyHttpOverrides();
+    try{
+ if (Platform.isIOS) {
       await Firebase.initializeApp();
 
   }else{
@@ -32,7 +36,11 @@ void main()async {
           );
 
   }
-    HttpOverrides.global = MyHttpOverrides();
+    }catch(e){
+      log(e.toString());
+    }
+
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
