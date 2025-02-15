@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/main.dart';
 import 'package:ecommerce_app/utils/Strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,10 +25,10 @@ class AuthState extends StateNotifier<bool> {
 
       if (user != null) {
         // state = user;
-        var sharedPrefs=await SharedPreferences.getInstance();
-       sharedPrefs.setBool(Strings.IS_LOGGED_IN, true);
-              sharedPrefs.setString(Strings.USER_ID, user.id);
-                 sharedPrefs.setString(Strings.USER_TOKEN, user.token.toString());
+        // var sharedPrefs=await SharedPreferences.getInstance();
+       globalSharedPrefs.setBool(Strings.IS_LOGGED_IN, true);
+              globalSharedPrefs.setString(Strings.USER_ID, user.id);
+                 globalSharedPrefs.setString(Strings.USER_TOKEN, user.token.toString());
         return null;
       } else {
         return 'Invalid credentials';

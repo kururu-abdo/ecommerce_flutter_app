@@ -1,6 +1,6 @@
 import 'package:ecommerce_app/cart/view/cart_screen.dart';
 import 'package:ecommerce_app/categories/view/category_list.dart';
-import 'package:ecommerce_app/home/views/home.dart';
+import 'package:ecommerce_app/features/home/views/home.dart';
 import 'package:ecommerce_app/more/views/more.dart';
 import 'package:ecommerce_app/providers/http_client_provider.dart';
 import 'package:ecommerce_app/utils/fcm_helper.dart';

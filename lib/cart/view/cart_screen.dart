@@ -1,18 +1,41 @@
 import 'dart:convert';
 
 import 'package:ecommerce_app/cart/view/data/models/cart.dart';
+import 'package:ecommerce_app/cart/view/data/models/cart_update_model.dart';
+import 'package:ecommerce_app/cart/view/widgets/cart_item_widget.dart';
 import 'package:ecommerce_app/checkout/views/checkout.dart';
+import 'package:ecommerce_app/providers/cart_provider.dart';
 import 'package:ecommerce_app/providers/http_client_provider.dart';
+import 'package:ecommerce_app/shared/widget/main_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-final dataProvider = FutureProvider.family<List<CartModel>, String>((ref, endpoint) async {
-  final apiService = ref.read(httpClientProvider);
- var response =await apiService.get('/cart');
- Iterable data = jsonDecode(response.body) ;
-  return data.map((row)=>CartModel.fromJson(row)).toList();
+final dataProvider = FutureProvider.autoDispose.family<List<CartModel>, String>((ref, endpoint) async {
+  final crtProvider = ref.read(cartProvider.notifier);
+ var data =await crtProvider.getCartFromApi();
+  return data;
 });
+final cartItemsProvider = Provider<List<CartModel>>((ref){
+final crtProvider = ref.watch(cartProvider);
+return crtProvider;
+});
+final cartDataUpdateProvider = FutureProvider.family<void, CartUpdateModel>((ref, product) async {
+  final crtProvider =ref.read(cartProvider.notifier);
+
+ crtProvider.updateCart(product);
+});
+
+final totalProvider = Provider<double>((ref) {
+    var cart = ref.watch(cartProvider);
+    // cartProvider.
+   return cart.fold(
+    0.0,
+    (total, item) => total + (item.price! * item.quantity!),
+    );
+
+});
+
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
 
@@ -56,6 +79,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   // Update the quantity of a product
   void updateQuantity(int productId, bool increase) {
+
+     var cartProviderAsync = ref.watch(dataProvider(''));
+      // cartProviderAsync.increase(productId,);
     setState(() {
       final product =
           cartItems.firstWhere((item) => item["id"] == productId);
@@ -71,6 +97,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   // Remove a product from the cart
   void removeFromCart(int productId) {
+      var cartProviderAsync = ref.watch(dataProvider(''));
+      // cartProviderAsync.remoteProduct(productId);
     setState(() {
       cartItems.removeWhere((item) => item["id"] == productId);
     });
@@ -79,7 +107,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
             var cartProviderAsync = ref.watch(dataProvider('')); // Example endpoint
-
+    var totalPrice = ref.watch(totalProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white,
@@ -103,84 +131,20 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                // scrollDirection: Axis.horizontal,
                itemCount: data.length,
                itemBuilder: (context, index) {
-                 final category = data[index];
+                 final item = data[index];
                  return 
-             Card(color: Colors.white,
-               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-               child: Row(
-                 children: [
-                   // Product Image
-                   Container(
-                     width: 100,
-                     height: 100,
-                     decoration: BoxDecoration(
-                       image: DecorationImage(
-                         image: NetworkImage(category.imageUrl.toString()),
-                         fit: BoxFit.cover,
-                       ),
-                       borderRadius: BorderRadius.circular(10),
-                     ),
-                   ),
-                   Expanded(
-                     child: Padding(
-                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                       child: Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                         children: [
-                           Text(
-                           category.arName.toString(),
-                             style: const TextStyle(
-                               fontSize: 16,
-                               fontWeight: FontWeight.bold,
-                             ),
-                           ),
-                           const SizedBox(height: 8),
-                           Text(
-                             "\$${category.price!.toStringAsFixed(2)}",
-                             style: const TextStyle(
-                               fontSize: 14,
-                               color: Colors.green,
-                             ),
-                           ),
-                           const SizedBox(height: 8),
-                           Row(
-                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                             children: [
-                               // Quantity Controls
-                               Row(
-                                 children: [
-                                   IconButton(
-                                     onPressed: () =>
-                                         updateQuantity(category.productId!, false),
-                                     icon: const Icon(Icons.remove_circle_outline),
-                                   ),
-                                   Text(
-                                     "${category.quantity}",
-                                     style: const TextStyle(fontSize: 16),
-                                   ),
-                                   IconButton(
-                                     onPressed: () =>
-                                         updateQuantity(category.productId!, true),
-                                     icon: const Icon(Icons.add_circle_outline),
-                                   ),
-                                 ],
-                               ),
-                               // Remove Button
-                               IconButton(
-                                 onPressed: () =>
-                                     removeFromCart(category.productId!),
-                                 icon: const Icon(Icons.delete, color: Colors.red),
-                               ),
-                             ],
-                           ),
-                         ],
-                       ),
-                     ),
-                   ),
-                 ],
-               ),
-             );
-                         
+             CartItemWidget(item: item, 
+             onUpdateQuantity: (id,isIncrease){ 
+              int productQty = item.quantity!;
+              ref.read(cartDataUpdateProvider(CartUpdateModel(product: id, quantity: 
+              
+              isIncrease?
+              productQty+1: productQty-1
+              )));
+   ref.refresh(dataProvider(''));
+             }, onRemove: (id){
+
+             });
                },
              ),
            )
@@ -387,7 +351,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       ),
                     ),
                     Text(
-                      "\$${getTotalPrice().toStringAsFixed(2)}",
+                      "\$${totalPrice.toStringAsFixed(2)}",
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -397,6 +361,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
+                MainButton(text:  "Proceed to Checkout",
+                
+                 onPressed: (){
+
+                   Navigator.of(context).push(
+
+MaterialPageRoute(builder: (_)=> CheckoutScreen(totalCost:
+ getTotalPrice(
+
+ ), 
+ 
+ items: ref.watch(cartItemsProvider).map((item)=>item.toJson()).toList(),
+ ))
+                    );
+                 })
+
+                 /*
                 ElevatedButton(
                   onPressed: () {
                     // Add checkout logic
@@ -414,6 +395,7 @@ MaterialPageRoute(builder: (_)=> CheckoutScreen(totalCost: getTotalPrice()))
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
+              */
               ],
             ),
           ),

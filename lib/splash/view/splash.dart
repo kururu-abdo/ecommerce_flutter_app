@@ -43,7 +43,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   // Navigate to the home screen after a delay
   Future<void> _navigateToHome() async {
     await Future.delayed(const Duration(seconds: 4));
-  ref.watch(userProvider.notifier).checkIfloggedIn().then((status){
+  ref.read(userProvider.notifier).checkIfloggedIn().then((status){
     if (status) {
        Navigator.pushReplacement(
       context,

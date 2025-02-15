@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/product/view/category_products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -6,11 +7,12 @@ class CategoryCardFullWidth extends StatelessWidget {
   final String imageUrl;
   final VoidCallback onTap;
 final bool? isLoading;
+final int? id;
   const CategoryCardFullWidth({
     super.key,
     required this.title,
     required this.imageUrl,
-    required this.onTap, required name, this.isLoading=false,
+    required this.onTap, required name, this.isLoading=false, this.id,
   });
 
   @override
@@ -22,7 +24,10 @@ final bool? isLoading;
         return Skeletonizer(
           enabled: true,
           child: GestureDetector(
-            onTap:() {},
+            onTap:() {
+
+             
+            },
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               shape: RoundedRectangleBorder(

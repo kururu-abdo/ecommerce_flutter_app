@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ecommerce_app/login/data/models/user.dart';
+import 'package:ecommerce_app/shared/result.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // import '../models/user.dart';
 import '../providers/http_client_provider.dart';
-
+import 'package:http/http.dart' as http;
 class AuthRepository {
   final HttpClient httpClient;
 
@@ -14,9 +15,9 @@ class AuthRepository {
 
   Future<User?> login(String email, String password) async {
     final response = await httpClient.post('/auth/login', {'email': email, 'password': password});
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+  
+    if (response  is Success) {
+      final data = jsonDecode(((response as Success).value as http.Response).body);
       return User.fromJson(data);
     } else {
       log("ERROR");
@@ -31,9 +32,16 @@ class AuthRepository {
      {
       'name':name,
       'email': email, 'password': password});
+  final result = switch (response) {
+     Success(value: final response2) => response2.body , 
+     Failure(exception: final exception2) => exception2.toString()
+    , 
+    _=> null
+    };
+return result;
+    if (response is Success) {
+           final data = jsonDecode(((response as Success).value as http.Response).body);
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = jsonDecode(response.body);
       return data['message'];
     } else {
       log("ERROR");

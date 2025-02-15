@@ -10,5 +10,8 @@ class Images  {
   static const String cart ='assets/icons/cart.png';
   static const String user ='assets/icons/user.png';
   static const String tuned ='assets/icons/tuning.png';
+  static const String cash ='assets/images/cod.png';
+  static const String paypal ='assets/images/paypal.png';
+
 
 }

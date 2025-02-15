@@ -12,8 +12,7 @@ class UtilNotifier extends StateNotifier {
 Future<bool> checkIfloggedIn() async {
     state = null;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-   return  prefs.getBool(Strings.IS_LOGGED_IN)??false;
+   return  globalSharedPrefs.getBool(Strings.IS_LOGGED_IN)??false;
   }
 String? getAuthToken()  {
 late String token;

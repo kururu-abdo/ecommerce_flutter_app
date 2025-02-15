@@ -1,14 +1,22 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:ecommerce_app/categories/bloc/categories_bloc.dart';
+import 'package:ecommerce_app/core/observers/bloc_observer.dart';
+import 'package:ecommerce_app/core/router/app_router.dart';
+import 'package:ecommerce_app/features/home/bloc/home_bloc.dart';
+import 'package:ecommerce_app/features/orders/bloc/order_bloc.dart';
+import 'package:ecommerce_app/product/bloc/product_bloc.dart';
 import 'package:ecommerce_app/splash/view/splash.dart';
 import 'package:ecommerce_app/utils/app_localizations.dart';
 import 'package:ecommerce_app/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'di/di.dart' as di;
 late SharedPreferences globalSharedPrefs;
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -19,10 +27,17 @@ class MyHttpOverrides extends HttpOverrides {
 }
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
-  globalSharedPrefs =await  SharedPreferences.getInstance();
+  
+    try{
+globalSharedPrefs =await  SharedPreferences.getInstance();
  
     HttpOverrides.global = MyHttpOverrides();
-    try{
+ await di.init();
+
+  Bloc.observer = MyBlocObserver();
+
+
+
  if (Platform.isIOS) {
       await Firebase.initializeApp();
 
@@ -50,47 +65,59 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Suoq',
-      debugShowCheckedModeBanner: false,
+    return MultiBlocProvider(
+      providers: [
 
- supportedLocales: const [
-        Locale('en', 'US'), // English
-        Locale('ar', 'SA'), // Arabic
+ BlocProvider(create: (context) => di.sl<HomeBloc>()),
+ BlocProvider(create: (context) => di.sl<ProductBloc>()),
+ BlocProvider(create: (context) => di.sl<OrderBloc>()),
+ BlocProvider(create: (context) => di.sl<CategoriesBloc>()),
+
+
       ],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        // Check if the current device locale is supported
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
-            return supportedLocale;
+      child: MaterialApp(
+        title: 'Suoq',
+        debugShowCheckedModeBanner: false,
+      // showSemanticsDebugger: true,
+       supportedLocales: const [
+          Locale('en', 'US'), // English
+          Locale('ar', 'SA'), // Arabic
+        ],
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        localeResolutionCallback: (locale, supportedLocales) {
+          // Check if the current device locale is supported
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale?.languageCode) {
+              return supportedLocale;
+            }
           }
-        }
-        return supportedLocales.first;
-      },
-
-      theme: ThemeData(
-        primaryColor: AppColors.primary,
-        // backgroundColor: AppColors.background,
-        textTheme: const TextTheme(
-          headlineLarge: AppTextStyles.headline1,
-          bodyLarge: AppTextStyles.bodyText1,
-          // : AppTextStyles.caption,
+          return supportedLocales.first;
+        },
+         onGenerateRoute: AppRouter.onGenerateRoute,
+        theme: ThemeData(
+          primaryColor: AppColors.primary,
+          // backgroundColor: AppColors.background,
+          textTheme: const TextTheme(
+            headlineLarge: AppTextStyles.headline1,
+            bodyLarge: AppTextStyles.bodyText1,
+            // : AppTextStyles.caption,
+          ),
+          // elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedButtonStyle),
+          // inputDecorationTheme: inputDecorationTheme,
+        
         ),
-        // elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedButtonStyle),
-        // inputDecorationTheme: inputDecorationTheme,
       
+        home: 
+      
+        const SplashScreen()
+        
+        // const OnboardingScreen()
       ),
-      home: 
-
-      const SplashScreen()
-      
-      // const OnboardingScreen()
     );
   }
 }
